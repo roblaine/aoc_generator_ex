@@ -1,21 +1,25 @@
 # AocGenerator
 
-**TODO: Add description**
+Generates the directory structure, boilerplate module code, and retrieves your puzzle input for a given day.
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
+The package can be installed
 by adding `aoc_generator` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
   [
-    {:aoc_generator, "~> 0.1.0"}
+    {:aoc_generator, "https://github.com/roblaine/aoc_generator_ex.git", tag: "0.1"}
   ]
 end
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at <https://hexdocs.pm/aoc_generator>.
+## Usage
 
+After adding your AOC Session Cookie to your local env, you can run this with 
+```sh
+mix day 1
+```
+
+The param passsed to the command must be in the range [1,25].
