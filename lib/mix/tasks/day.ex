@@ -84,7 +84,7 @@ defmodule Mix.Tasks.Day do
   defp template_day_module(day) do
     {:ok, {file_path, binary_day}} = file_path_and_day_binary(day)
     input_command = ~s(File.read!(#{file_path}\))
-    input_as_list = ~s(@input |> String.split\("\n", trim: true\))
+    input_as_list = ~S(@input |> String.split("\n", trim: true\))
 
     {:ok,
       """
