@@ -7,6 +7,11 @@ defmodule AocGenerator.Application do
 
   @impl true
   def start(_type, _args) do
+    Application.start(:inets)
+    Application.start(:ssl)
+    {:ok, _profile_pid} = :inets.start(:httpc, [{:profile, :user}])
+    :httpc.set_options([cookies: :verify], :user)
+
     children = [
       # Starts a worker by calling: AocGenerator.Worker.start_link(arg)
       # {AocGenerator.Worker, arg}
