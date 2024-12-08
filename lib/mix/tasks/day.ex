@@ -55,7 +55,7 @@ defmodule Mix.Tasks.Day do
          {data, _} <- Utilities.get_puzzle_input(day, @default_year, session_cookie),
          dir_path <- dir_to_save(day),
          :ok <- File.mkdir_p(dir_path),
-         :ok <- File.write("#{dir_path}/#{Map.get(@days, day)}.ex", day_template),
+         :ok <- File.write("#{dir_path}/#{Macro.underscore(Map.get(@days, day))}.ex", day_template),
          :ok <-  File.write("#{dir_path}/input", data) do
       Logger.info("Successfully created #{day} template.")
     else
@@ -84,7 +84,7 @@ defmodule Mix.Tasks.Day do
   defp template_day_module(day) do
     {:ok, {file_path, binary_day}} = file_path_and_day_binary(day)
     input_command = ~s(File.read!(#{file_path}\))
-    input_as_list = ~s(@input |> String.split\(\"\n\", trim: true\))
+    input_as_list = ~s(@input |> String.split\("\n", trim: true\))
 
     {:ok,
       """
