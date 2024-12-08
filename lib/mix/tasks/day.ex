@@ -55,8 +55,9 @@ defmodule Mix.Tasks.Day do
          {data, _} <- Utilities.get_puzzle_input(day, @default_year, session_cookie),
          dir_path <- dir_to_save(day),
          :ok <- File.mkdir_p(dir_path),
-         :ok <- File.write("#{dir_path}/#{Macro.underscore(Map.get(@days, day))}.ex", day_template),
-         :ok <-  File.write("#{dir_path}/input", data) do
+         :ok <-
+           File.write("#{dir_path}/#{Macro.underscore(Map.get(@days, day))}.ex", day_template),
+         :ok <- File.write("#{dir_path}/input", data) do
       Logger.info("Successfully created #{day} template.")
     else
       err -> IO.inspect(err)
@@ -64,7 +65,7 @@ defmodule Mix.Tasks.Day do
   end
 
   defp dir_to_save(day) do
-    Path.join(File.cwd!, "/lib/day#{Integer.to_string(day)}/")
+    Path.join(File.cwd!(), "/lib/day#{Integer.to_string(day)}/")
   end
 
   defp get_session_cookie do
@@ -87,17 +88,17 @@ defmodule Mix.Tasks.Day do
     input_as_list = ~S(@input |> String.split("\n", trim: true\))
 
     {:ok,
-      """
+     """
       defmodule #{binary_day} do
         @input #{input_command}
         @input_as_list #{input_as_list}
 
-        def part_one do
-          nil
+        def one do
+          @input_as_list
         end
 
-        def part_two do
-          nil
+        def two do
+          @input_as_list
         end
       end
      """}
