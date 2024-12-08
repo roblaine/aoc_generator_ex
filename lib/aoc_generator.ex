@@ -1,2 +1,0 @@
-defmodule AocGenerator do
-end

@@ -5,10 +5,12 @@ defmodule Mix.Tasks.Day do
   `mix day 10`
 
   """
-
   require Logger
   use Mix.Task
 
+  alias Mix.Tasks.Day.Utilities
+
+  @default_year "2024"
   @days %{
     1 => "One",
     2 => "Two",
@@ -38,33 +40,31 @@ defmodule Mix.Tasks.Day do
   }
 
   def run(args) do
-    day = String.to_integer(hd(args))
-    Mix.shell().info(Enum.join(args, " "))
-    # with
-    # {:aoc_session_cookie, session_cookie} = get_session_cookie() |> IO.inspect(label: :cookie)
-    # create_day(day, session_cookie)
-    # else
-    #   {:aoc_session_cookie_not_set, nil} ->
-    #     Logger.error(
-    #       ~s(Please set your advent of code session cookie in your local env, like so\n\n\texport AOC_SESSION_COOKIE=<cookie-value>\n\nbefore running this mix task.)
-    #     )
-    # end
+    with {:aoc_session_cookie, session_cookie} <- get_session_cookie() do
+      create_day(String.to_integer(hd(args)), session_cookie)
+    else
+      {:aoc_session_cookie_not_set, nil} ->
+        Logger.error(
+          ~s(Please set your advent of code session cookie in your local env, like so\n\n\texport AOC_SESSION_COOKIE=<cookie-value>\n\nbefore running this mix task.)
+        )
+    end
   end
 
   defp create_day(day, session_cookie) do
     with {:ok, day_template} <- template_day_module(day),
-         {:ok, input} <- download_input(day, session_cookie) do
-      IO.inspect(day_template)
+         {data, _} <- Utilities.get_puzzle_input(day, @default_year, session_cookie),
+         dir_path <- dir_to_save(day),
+         :ok <- File.mkdir_p(dir_path),
+         :ok <- File.write("#{dir_path}/#{Map.get(@days, day)}.ex", day_template),
+         :ok <-  File.write("#{dir_path}/input", data) do
+      Logger.info("Successfully created #{day} template.")
     else
-      error -> Logger.error(error)
+      err -> IO.inspect(err)
     end
   end
 
-  # defp create_day(_, _), do: {:error, :invalid_params}
-
-  defp download_input(day, session_cookie) do
-    # @aoc_address
-    {:ok, ""}
+  defp dir_to_save(day) do
+    Path.join(File.cwd!, "/lib/day#{Integer.to_string(day)}/")
   end
 
   defp get_session_cookie do
@@ -76,7 +76,7 @@ defmodule Mix.Tasks.Day do
 
   defp file_path_and_day_binary(day) when is_integer(day) and day in 1..25 do
     day_to_binary = Map.get(@days, day)
-    {:ok, {String.downcase("lib/#{day_to_binary}/input"), day_to_binary}}
+    {:ok, {String.downcase("lib/day#{Integer.to_string(day)}/input"), day_to_binary}}
   end
 
   defp file_path_and_day_binary(_), do: {:error, "invalid_day"}
@@ -87,19 +87,19 @@ defmodule Mix.Tasks.Day do
     input_as_list = ~s(@input |> String.split\(\"\n\", trim: true\))
 
     {:ok,
-     """
-     defmodule #{binary_day} do
-       @input #{input_command}
-       @input_as_list #{input_as_list}
+      """
+      defmodule #{binary_day} do
+        @input "#{input_command}"
+        @input_as_list #{input_as_list}
 
-       def part_one do
-         nil
-       end
+        def part_one do
+          nil
+        end
 
-       def part_two do
-         nil
-       end
-     end
+        def part_two do
+          nil
+        end
+      end
      """}
   end
 end
