@@ -19,8 +19,16 @@ end
 
 ## Usage
 
-After adding your AOC Session Cookie to your local env, you can run this with
+1. Sign in to `https://adventofcode.com` 
+2. view your session cookie in dev tools
+   - Chrome: DevTools (F12) > Application > Cookies > https://adventofcode.com
+   - Firefox: DevTools (F12) > Storage > Cookies > https://adventofcode.com
+4. Export the Value of your cookie in your env under the key `AOC_SESSION_COOKIE` in your terminal
+```sh
+export AOC_SESSION_COOKIE='your_session_cookie_here'
+```
 
+5. Run the generator via mix in your project   
 ```sh
 mix day 1
 ```
