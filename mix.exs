@@ -11,6 +11,12 @@ defmodule AocGenerator.MixProject do
     ]
   end
 
+  def application do
+    [
+      extra_applications: [:logger]
+    ]
+  end
+
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
